@@ -4,6 +4,7 @@ import com.weather.api.service.WeatherService;
 import com.weather.api.service.dto.WeatherAverageDetails;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -11,6 +12,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.math.BigDecimal;
+
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -33,9 +37,11 @@ public class WeatherControllerTest {
 
         WeatherAverageDetails weatherAverageDetails = new WeatherAverageDetails();
         weatherAverageDetails.setCity("Sao Paulo");
-        weatherAverageDetails.setAveragePressure(100f);
-        weatherAverageDetails.setDayTimeAverageTemperature(200f);
-        weatherAverageDetails.setNightTimeAverageTemperature(200f);
+        weatherAverageDetails.setAveragePressure( new BigDecimal(100));
+        weatherAverageDetails.setDayTimeAverageTemperature( new BigDecimal( 200));
+        weatherAverageDetails.setNightTimeAverageTemperature(new BigDecimal(200));
+
+        when(weatherService.getWeather(Mockito.anyString())).thenReturn(weatherAverageDetails);
 
         ResultActions actions =
                 this.mockMvc.perform(
@@ -44,7 +50,7 @@ public class WeatherControllerTest {
                 .andDo(print());
 
         actions.andExpect(status().isOk());
-        actions.andExpect(jsonPath("$.data.city").value("Sao Paulo"));
+        actions.andExpect(jsonPath("$.city").value("Sao Paulo"));
 
     }
 

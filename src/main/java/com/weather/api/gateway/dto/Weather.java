@@ -1,6 +1,7 @@
 package com.weather.api.gateway.dto;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
@@ -15,7 +16,17 @@ public class Weather {
     private float avgTemp;
     private float pressure;
     private LocalDateTime forecastDateTime;
+    private LocalDate forecastDate;
+    private boolean day = false;
 
+    public LocalDate getForecastDate(){
+        return forecastDateTime.toLocalDate();
+    }
+
+    public boolean isDay() {
+        return (forecastDateTime.getHour() > 6 && forecastDateTime.getHour() < 18);
+
+    }
 
     public String getCity() {
         return city;

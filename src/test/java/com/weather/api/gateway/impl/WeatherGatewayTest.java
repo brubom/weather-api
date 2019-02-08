@@ -2,23 +2,24 @@ package com.weather.api.gateway.impl;
 
 
 import com.weather.api.gateway.dto.Weather;
+import com.weather.api.util.CurrentDateMock;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URI;
+import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -47,6 +48,7 @@ import static org.mockito.Mockito.when;
  *
  * </pre>
  */
+@TestPropertySource("classpath:application.properties")
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class WeatherGatewayTest {
@@ -59,12 +61,6 @@ public class WeatherGatewayTest {
     private RestTemplate restTemplate;
 
 
-    @Value("${weatherapi.openweather.endpoint}")
-    private String openWeatherEndpoint;
-
-    @Value("${weatherapi.openweather.apikey}")
-    private String openWeatherApiKey;
-
     @Before
     public void setUp(){
         MockitoAnnotations.initMocks(this);
@@ -76,23 +72,23 @@ public class WeatherGatewayTest {
         String city = "Sao Paulo";
         Weather weather = new Weather();
         weather.setCity(city);
-        weather.setAvgTemp(200.03f);
-        weather.setForecastDateTime(LocalDateTime.now());
-        weather.setMaxTemp(201.00f);
-        weather.setMinTemp(198.00f);
+        weather.setAvgTemp(300.00f);
+        weather.setForecastDateTime(CurrentDateMock.getMockCurrentDate());
+        weather.setMaxTemp(303.00f);
+        weather.setMinTemp(299.00f);
         weather.setPressure(100);
 
-        URI uri = URI.create(openWeatherEndpoint + "/forecast?q=" + city + "/appid=" + openWeatherApiKey);
-
-        ResponseEntity<String> response
-                = restTemplate.getForEntity(uri, String.class);
-
         String jsonResponse = IOUtils.toString(
-                this.getClass().getResourceAsStream("SaoPaulo.json"),
+                this.getClass().getResourceAsStream("/SaoPaulo.json"),
                 "UTF-8"
         );
-        when(restTemplate.getForEntity(uri, String.class))
-                .thenReturn(new ResponseEntity(jsonResponse, HttpStatus.OK));
+
+        ResponseEntity responseEntity = new ResponseEntity(jsonResponse, HttpStatus.OK);
+
+        when(restTemplate.getForEntity(
+                Mockito.anyString(),
+                ArgumentMatchers.any(Class.class)))
+                .thenReturn(responseEntity);
 
         List<Weather> weatherList = weatherGateway.getWeather("Sao Paulo");
 

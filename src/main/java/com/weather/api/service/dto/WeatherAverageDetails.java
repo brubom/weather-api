@@ -11,9 +11,13 @@ public class WeatherAverageDetails {
 
 
     private String city;
-    private float dayTimeAverageTemperature;
-    private float nightTimeAverageTemperature;
-    private float averagePressure;
+    private BigDecimal dayTimeAverageTemperature;
+    private BigDecimal nightTimeAverageTemperature;
+    private BigDecimal averagePressure;
+
+    public WeatherAverageDetails(){
+
+    }
 
     public String getCity() {
         return city;
@@ -23,27 +27,28 @@ public class WeatherAverageDetails {
         this.city = city;
     }
 
-    public float getDayTimeAverageTemperature() {
-        return dayTimeAverageTemperature;
+    public BigDecimal getDayTimeAverageTemperature() {
+        return dayTimeAverageTemperature.setScale(3, BigDecimal.ROUND_HALF_UP);
     }
 
-    public void setDayTimeAverageTemperature(float dayTimeAverageTemperature) {
-        this.dayTimeAverageTemperature = dayTimeAverageTemperature;
+    public void setDayTimeAverageTemperature(BigDecimal dayTimeAverageTemperature) {
+        this.dayTimeAverageTemperature = dayTimeAverageTemperature.setScale(3, BigDecimal.ROUND_HALF_UP);
     }
 
-    public float getNightTimeAverageTemperature() {
-        return nightTimeAverageTemperature;
+    public BigDecimal getNightTimeAverageTemperature() {
+        return nightTimeAverageTemperature.setScale(3, BigDecimal.ROUND_HALF_UP);
     }
 
-    public void setNightTimeAverageTemperature(float nightTimeAverageTemperature) {
-        this.nightTimeAverageTemperature = nightTimeAverageTemperature;
+    public void setNightTimeAverageTemperature(BigDecimal nightTimeAverageTemperature) {
+        this.nightTimeAverageTemperature = nightTimeAverageTemperature.setScale(3, BigDecimal.ROUND_HALF_UP);
     }
 
-    public float getAveragePressure() {
-        return averagePressure;
+    public BigDecimal getAveragePressure() {
+        return averagePressure.setScale(3, BigDecimal.ROUND_HALF_UP);
     }
 
-    public void setAveragePressure(float averagePressure) {
-        this.averagePressure = averagePressure;
+    public void setAveragePressure(BigDecimal averagePressure) {
+
+        this.averagePressure = averagePressure.setScale(3, BigDecimal.ROUND_HALF_UP);
     }
 }
