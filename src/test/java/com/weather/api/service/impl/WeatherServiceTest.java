@@ -82,9 +82,9 @@ public class WeatherServiceTest {
 
 
          assertEquals(df.format( weatherAverageDetails.getDayTimeAverageTemperature())
-            ,"302.515");
+            ,"29.365");
          assertEquals(df.format( weatherAverageDetails.getNightTimeAverageTemperature())
-                 ,"299.75");
+                 ,"26.6");
 
      }
 
