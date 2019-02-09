@@ -43,7 +43,7 @@ public class WeatherServiceImpl implements WeatherService {
             logger.error("Failed to transform a list of WeatherDTO into a single Weather Average", ex);
             throw ex;
         }
-        return weatherAverageDetails
+        return weatherAverageDetails;
 
     }
 
