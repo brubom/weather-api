@@ -75,4 +75,21 @@ public class Weather {
     public void setForecastDateTime(LocalDateTime forecastDateTime) {
         this.forecastDateTime = forecastDateTime;
     }
+
+    @Override
+    public String toString(){
+
+        StringBuilder builder = new StringBuilder();
+        builder.append("[City:").append(city).append("]");
+        builder.append("[maxTemp:").append(maxTemp).append("]");
+        builder.append("[minTemp:").append(minTemp).append("]");
+        builder.append("[avgTemp:").append(avgTemp).append("]");
+        builder.append("[pressure:").append(pressure).append("]");
+        builder.append("[forecastDateTime:").append(forecastDateTime).append("]");
+        builder.append("[forecastDate:").append(forecastDate).append("]");
+        builder.append("[isDay:").append(day).append("]");
+
+        return builder.toString();
+
+    }
 }

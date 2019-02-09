@@ -2,6 +2,8 @@ package com.weather.api.controller;
 
 import com.weather.api.service.WeatherService;
 import com.weather.api.service.dto.WeatherAverageDetails;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,6 +18,7 @@ import java.io.IOException;
 @RestController
 public class WeatherController {
 
+    private static final Logger logger = LogManager.getLogger(WeatherController.class);
 
     @Autowired
     private WeatherService weatherService;
@@ -25,6 +28,7 @@ public class WeatherController {
                                                                @Pattern(regexp = "^[a-zA-Z ]*$")
                                                                String city) throws IOException {
 
+        logger.debug("Starting getWeatherAverage controller for " + city);
         return weatherService.getWeather(city);
 
     }

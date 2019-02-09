@@ -4,6 +4,8 @@ import com.weather.api.gateway.WeatherGateway;
 import com.weather.api.gateway.dto.Weather;
 import com.weather.api.service.WeatherService;
 import com.weather.api.service.dto.WeatherAverageDetails;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +19,8 @@ import java.util.stream.Collectors;
 public class WeatherServiceImpl implements WeatherService {
 
     private final Double KelvinConstant = 273.15;
+
+    private static final Logger logger = LogManager.getLogger(WeatherService.class);
 
     @Autowired
     private WeatherGateway weatherGateway;
@@ -32,7 +36,14 @@ public class WeatherServiceImpl implements WeatherService {
 
         List<Weather> weatherList = weatherGateway.getWeather(city);
 
-        return convertWatherToDetails(weatherList);
+        WeatherAverageDetails weatherAverageDetails = null;
+        try{
+            weatherAverageDetails = convertWatherToDetails(weatherList);
+        }catch (Exception ex){
+            logger.error("Failed to transform a list of WeatherDTO into a single Weather Average", ex);
+            throw ex;
+        }
+        return weatherAverageDetails
 
     }
 
@@ -48,6 +59,8 @@ public class WeatherServiceImpl implements WeatherService {
 
         LocalDate currentDate = LocalDate.now();
         LocalDate endDate = currentDate.plusDays(4);
+
+        logger.debug("Start date is " + currentDate + " and endDate is " +endDate );
 
         List<Weather> filtered = weathers.stream().filter(f ->
                 f.getForecastDate().isAfter(currentDate) && f.getForecastDate().isBefore(endDate))
@@ -76,6 +89,8 @@ public class WeatherServiceImpl implements WeatherService {
         weatherAverageDetails.setDayTimeAverageTemperature(new BigDecimal(dayTimeAverage));
         weatherAverageDetails.setAveragePressure(new BigDecimal(pressureAverage));
         weatherAverageDetails.setCity(weathers.get(0).getCity());
+
+        logger.debug("WeatherDetails:\n" + weatherAverageDetails);
 
         return weatherAverageDetails;
 

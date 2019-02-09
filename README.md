@@ -7,8 +7,11 @@ This is how I solved the challenge.
 # So what?
   - I'm reallying on GateWay class to abstract openweathermap api call
   - Service class manages the transformation and filter, as the openweathermap returns data for five days
+  - I'm using streams to group, filter and map openweather api json into a single average rest return.
   - Spring boot does the magic
   - Swagger for documentation
+  
+  
 
 ### How to run
 Just do a:

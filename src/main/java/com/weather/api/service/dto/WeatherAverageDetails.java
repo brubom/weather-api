@@ -51,4 +51,16 @@ public class WeatherAverageDetails {
 
         this.averagePressure = averagePressure.setScale(3, BigDecimal.ROUND_HALF_UP);
     }
+
+    @Override
+    public String toString(){
+
+        StringBuilder builder = new StringBuilder();
+        builder.append("[City:").append(city).append("]");
+        builder.append("[dayTimeAverageTemperature:").append(dayTimeAverageTemperature).append("]");
+        builder.append("[nightTimeAverageTemperature:").append(nightTimeAverageTemperature).append("]");
+        builder.append("[averagePressure:").append(averagePressure).append("]");
+
+        return builder.toString();
+    }
 }

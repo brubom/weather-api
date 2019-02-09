@@ -4,16 +4,15 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.weather.api.gateway.WeatherGateway;
 import com.weather.api.gateway.dto.Weather;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
-
 import java.io.IOException;
-import java.net.URI;
-import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -23,6 +22,7 @@ import java.util.List;
 @Component
 public class WeatherGatewayImpl implements WeatherGateway {
 
+    private static final Logger logger = LogManager.getLogger(WeatherGatewayImpl.class);
 
     @Value("${weatherapi.openweather.endpoint}")
     private String openWeatherEndpoint;
@@ -42,11 +42,27 @@ public class WeatherGatewayImpl implements WeatherGateway {
     @Override
     public List<Weather> getWeather(String city) throws IOException {
 
-        ResponseEntity<String> response
-                = restTemplate.getForEntity(openWeatherEndpoint + "/forecast?q=" + city + "&appid=" + openWeatherApiKey, String.class);
+        logger.debug("Calling service on endpoint:" + openWeatherEndpoint);
+        ResponseEntity<String> response  = null;
 
+        try {
+            response = restTemplate.getForEntity(openWeatherEndpoint + "/forecast?q=" +
+                    city + "&appid=" + openWeatherApiKey, String.class);
+        }catch (Exception ex){
+            logger.error("Failed to call openweatherapi on " + openWeatherEndpoint, ex);
+            throw  ex;
+        }
 
-        return fromJsonToWeather(response.getBody());
+        List<Weather> weatherList = null;
+
+        try {
+            weatherList = fromJsonToWeather(response.getBody());
+        }catch (IOException ex){
+            logger.error("Failed to transform openweatherapi json. Endpoint " + openWeatherEndpoint, ex);
+            throw  ex;
+        }
+
+        return weatherList;
     }
 
     private List<Weather> fromJsonToWeather(String  jsonBody) throws IOException {
@@ -67,6 +83,7 @@ public class WeatherGatewayImpl implements WeatherGateway {
             weather.setAvgTemp(( weather.getMaxTemp() + weather.getMinTemp()) / 2 );
             weather.setForecastDateTime(getLocalDateTimeFromNode(node, "dt"));
             weatherList.add(weather);
+            logger.debug("Adding WeatherDTO:\n" + weather);
         }
 
         return weatherList;
